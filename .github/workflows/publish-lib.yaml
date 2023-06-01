@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       lib-name:
-        description: Charm file name
+        description: Lib name
         required: true
         type: string
     secrets:
@@ -14,13 +14,13 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-22.04
-    name: Charmhub upload orc8r-libs
+    name: Charmhub upload SD-Core lib
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Install charmcraft
         run: sudo snap install charmcraft --classic
-      - name: Publish NRF lib
+      - name: Publish lib
         env:
           CHARMCRAFT_AUTH: "${{ secrets.CHARMCRAFT_AUTH }}"
         run: |
