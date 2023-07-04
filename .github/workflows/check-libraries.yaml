@@ -12,5 +12,5 @@ jobs:
     steps:
       - uses: canonical/charming-actions/check-libraries@2.3.0
         with:
-        credentials: "${{ secrets.CHARMCRAFT_AUTH }}"
-        github-token: "${{ secrets.GITHUB_TOKEN }}"    
+          credentials: "${{ secrets.CHARMCRAFT_AUTH }}"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"    
