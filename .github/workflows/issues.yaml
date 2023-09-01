@@ -1,8 +1,10 @@
 name: Sync Issues to JIRA
 
 on:
-  issues:
-    types: [opened, reopened, closed]
+  workflow_call:
+    secrets:
+      JIRA_URL:
+        required: true
 
 jobs:
   update:
