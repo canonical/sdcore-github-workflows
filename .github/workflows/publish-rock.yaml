@@ -36,10 +36,3 @@ jobs:
             oci-archive:"${rock_file}" \
             docker-daemon:"ghcr.io/canonical/${image_name}:${version}"
           docker push ghcr.io/canonical/${image_name}:${version}
-
-      - name: Archive charmcraft logs
-        if: failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: charmcraft-logs
-          path: /home/runner/.local/state/charmcraft/log/*.log
