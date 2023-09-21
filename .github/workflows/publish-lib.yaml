@@ -27,3 +27,9 @@ jobs:
           set -eux
           echo "Publishing lib"
           charmcraft publish-lib ${{ inputs.lib-name }}
+      - name: Archive charmcraft logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: charmcraft-logs
+          path: /home/runner/.local/state/charmcraft/log/*.log
