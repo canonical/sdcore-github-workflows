@@ -1,15 +1,12 @@
 name: Promote Charm
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       promotion:
-        type: choice
+        type: string
+        required: true
         description: Channel to promote from
-        options:
-          - edge -> beta
-          - beta -> candidate
-          - candidate -> stable
 
 jobs:
   promote:
