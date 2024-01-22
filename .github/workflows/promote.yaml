@@ -7,6 +7,10 @@ on:
         type: string
         required: true
         description: Channel to promote from
+      track-name:
+        default: latest
+        description: Name of the charmhub track to publish
+        type: string
 
 jobs:
   promote:
@@ -35,6 +39,6 @@ jobs:
           base-channel: 22.04
           credentials: ${{ secrets.CHARMCRAFT_AUTH }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          destination-channel: 1.3/${{ env.promote-to }}
-          origin-channel: 1.3/${{ env.promote-from }}
-          charmcraft-channel: 1.3/stable
+          destination-channel: ${{ inputs.charm-file-name }}/${{ env.promote-to }}
+          origin-channel: ${{ inputs.charm-file-name }}/${{ env.promote-from }}
+          charmcraft-channel: ${{ inputs.charm-file-name }}/stable
