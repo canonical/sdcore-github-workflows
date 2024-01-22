@@ -7,6 +7,10 @@ on:
         description: Charm file name
         required: true
         type: string
+      track-name:
+        default: latest
+        description: Name of the charmhub track to publish
+        type: string
     secrets:
       CHARMCRAFT_AUTH:
         required: true
@@ -31,7 +35,7 @@ jobs:
           built-charm-path: ${{ inputs.charm-file-name }}
           credentials: "${{ secrets.CHARMCRAFT_AUTH }}"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-          channel: latest/edge
+          channel: ${{ inputs.track-name }}/edge
       - name: Archive charmcraft logs
         if: failure()
         uses: actions/upload-artifact@v4
