@@ -30,7 +30,7 @@ jobs:
       - name: Move charm in current directory
         run: find ./ -name ${{ inputs.charm-file-name }} -exec mv -t ./ {} \;
       - name: Upload charm to Charmhub
-        uses: canonical/charming-actions/upload-charm@2.4.0
+        uses: canonical/charming-actions/upload-charm@bc8d4ee58ddf99c6f13fc80e8a14dfe1e68a8ea6
         with:
           built-charm-path: ${{ inputs.charm-file-name }}
           credentials: "${{ secrets.CHARMCRAFT_AUTH }}"
