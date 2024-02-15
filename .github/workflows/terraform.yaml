@@ -5,6 +5,12 @@ name: Check Terraform Module
 
 on:
   workflow_call:
+    inputs:
+      working-directory:
+        description: The directory that stores the Terraform modules
+        required: false
+        default: ./terraform
+        type: string
 
 jobs:
   check-terraform:
@@ -12,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./terraform
+        working-directory: ${{ inputs.working-directory }}
 
     steps:
       - name: Checkout Repository
