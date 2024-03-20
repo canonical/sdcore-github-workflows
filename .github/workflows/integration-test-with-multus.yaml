@@ -38,15 +38,14 @@ jobs:
       # - name: Run integration tests
       #   run: tox -e integration
       - name: Install deps
-        run: snap install charmcraft --classic
+        run: sudo snap install charmcraft --classic
       - name: Build Charm
         run: charmcraft pack
       - name: Archive Tested Charm
         uses: actions/upload-artifact@v4
-        if: ${{ github.ref_name == 'main' }}
         with:
           name: tested-charm
-          path: .tox/**/${{ inputs.charm-file-name }}
+          path: ./${{ inputs.charm-file-name }}
           retention-days: 5
       - name: Archive charmcraft logs
         if: failure()
