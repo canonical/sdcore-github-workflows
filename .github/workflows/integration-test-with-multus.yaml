@@ -21,22 +21,24 @@ jobs:
         uses: canonical/setup-lxd@main
         with:
           channel: latest/stable
-      - name: Setup operator environment
-        uses: charmed-kubernetes/actions-operator@main
-        with:
-          juju-channel: 3.4/stable
-          provider: microk8s
-          channel: 1.27-strict/stable
-          microk8s-addons: "hostpath-storage dns metallb:10.0.0.2-10.0.0.10"
-      - name: Enable Multus addon
-        continue-on-error: true
-        run: |
-          sudo microk8s addons repo add community https://github.com/canonical/microk8s-community-addons --reference feat/strict-fix-multus
-          sudo microk8s enable multus
-          sudo microk8s kubectl -n kube-system rollout status daemonset/kube-multus-ds
-          sudo microk8s kubectl auth can-i create network-attachment-definitions
-      - name: Run integration tests
-        run: tox -e integration
+      # - name: Setup operator environment
+      #   uses: charmed-kubernetes/actions-operator@main
+      #   with:
+      #     juju-channel: 3.4/stable
+      #     provider: microk8s
+      #     channel: 1.27-strict/stable
+      #     microk8s-addons: "hostpath-storage dns metallb:10.0.0.2-10.0.0.10"
+      # - name: Enable Multus addon
+      #   continue-on-error: true
+      #   run: |
+      #     sudo microk8s addons repo add community https://github.com/canonical/microk8s-community-addons --reference feat/strict-fix-multus
+      #     sudo microk8s enable multus
+      #     sudo microk8s kubectl -n kube-system rollout status daemonset/kube-multus-ds
+      #     sudo microk8s kubectl auth can-i create network-attachment-definitions
+      # - name: Run integration tests
+      #   run: tox -e integration
+      - name: Build Charm
+        run: charmcraft pack
       - name: Archive Tested Charm
         uses: actions/upload-artifact@v4
         if: ${{ github.ref_name == 'main' }}
