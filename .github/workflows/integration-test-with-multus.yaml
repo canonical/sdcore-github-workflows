@@ -37,6 +37,8 @@ jobs:
       #     sudo microk8s kubectl auth can-i create network-attachment-definitions
       # - name: Run integration tests
       #   run: tox -e integration
+      - name: Install deps
+        run: snap install charmcraft --classic
       - name: Build Charm
         run: charmcraft pack
       - name: Archive Tested Charm
