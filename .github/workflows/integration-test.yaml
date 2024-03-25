@@ -44,7 +44,6 @@ jobs:
         run: tox -e integration
       - name: Archive Tested Charm
         uses: actions/upload-artifact@v4
-        if: ${{ github.ref_name == 'main' }}
         with:
           name: tested-charm
           path: .tox/**/${{ inputs.charm-file-name }}
