@@ -23,8 +23,20 @@ on:
         required: true
 
 jobs:
+  sanitize-branch-name:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Sanitize the branch variable
+        id: sanitize
+        run: |
+          echo "BRANCH_NAME=/${{ inputs.branch-name }} | sed 's/\//-/2g'" >> $GITHUB_OUTPUT
+        if: ${{inputs.branch-name}} != ""
+
   publish-charm:
     runs-on: ubuntu-22.04
+    needs: [sanitize-branch-name]
+    env:
+      BRANCH_NAME: "${{ needs.sanitize-branch.otuputs.BRANCH_NAME}}"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,7 +54,7 @@ jobs:
           built-charm-path: ${{ inputs.charm-file-name }}
           credentials: "${{ secrets.CHARMCRAFT_AUTH }}"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-          channel: ${{ inputs.track-name }}/edge${{ inputs.branch-name }}
+          channel: ${{ inputs.track-name }}/edge${{ env.BRANCH_NAME }}
       - name: Archive charmcraft logs
         if: failure()
         uses: actions/upload-artifact@v4
