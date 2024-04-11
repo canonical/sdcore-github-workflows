@@ -17,16 +17,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup LXD
-        uses: canonical/setup-lxd@main
-        with:
-          channel: latest/stable
       - name: Setup operator environment
         uses: charmed-kubernetes/actions-operator@main
         with:
           juju-channel: 3.4/stable
           provider: microk8s
           channel: 1.27-strict/stable
+          lxd-channel: 5.20/stable
           microk8s-addons: "hostpath-storage dns metallb:10.0.0.2-10.0.0.10"
       - name: Enable Multus addon
         continue-on-error: true
