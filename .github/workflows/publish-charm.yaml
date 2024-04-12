@@ -6,10 +6,6 @@ name: publish-charm
 on:
   workflow_call:
     inputs:
-      charm-file-name:
-        description: Charm file name
-        required: true
-        type: string
       track-name:
         default: latest
         description: Name of the charmhub track to publish
@@ -30,26 +26,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install charmcraft
-        run: sudo snap install charmcraft --classic
+
       - name: Fetch Tested Charm
         uses: actions/download-artifact@v4
         with:
-          name: tested-charm
-      - name: Move charm in current directory
-        run: find ./ -name ${{ inputs.charm-file-name }} -exec mv -t ./ {} \;
+          name: built-charm
+      
+      - name: Get Charm Under Test Path
+        id: charm-path
+        run: echo "charm_path=$(find . -name '*.charm' -type f -print)" >> $GITHUB_OUTPUT
+  
+      - name: Install charmcraft
+        run: sudo snap install charmcraft --classic
+
       - name: Sanitize the branch variable
         id: sanitize
         run: |
           echo sanitized=$(echo ${{ inputs.branch-name }} | sed 's/[/_.]/-/g' | sed "s/^/\//") >> $GITHUB_OUTPUT
         if: ${{inputs.branch-name}} != ""
+
       - name: Upload charm to Charmhub
         uses: canonical/charming-actions/upload-charm@bc8d4ee58ddf99c6f13fc80e8a14dfe1e68a8ea6
         with:
-          built-charm-path: ${{ inputs.charm-file-name }}
+          built-charm-path: ${{ steps.charm-path.outputs.charm_path }}
           credentials: "${{ secrets.CHARMCRAFT_AUTH }}"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           channel: ${{ inputs.track-name }}/edge${{ steps.sanitize.outputs.sanitized }}
+  
       - name: Archive charmcraft logs
         if: failure()
         uses: actions/upload-artifact@v4
