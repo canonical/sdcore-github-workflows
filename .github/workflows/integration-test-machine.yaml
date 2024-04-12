@@ -31,8 +31,9 @@ jobs:
           lxd-channel: 5.20/stable
 
       - name: Run integration tests
-        run: tox -e integration -- \
-          --charm_path="${{ steps.charm-path.outputs.charm_path }}" \
+        run: |
+          tox -e integration -- \
+            --charm_path="${{ steps.charm-path.outputs.charm_path }}" \
 
       - name: Archive charmcraft logs
         if: failure()

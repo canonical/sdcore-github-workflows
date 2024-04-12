@@ -6,10 +6,6 @@ name: Integration test
 on:
   workflow_call:
     inputs:
-      charm-file-name:
-        description: Tested charm file name
-        required: true
-        type: string
       enable-metallb:
         description: Enable MetalLB
         required: false
@@ -27,6 +23,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+    
+      - name: Fetch Charm Under Test
+        uses: actions/download-artifact@v4
+        with:
+          name: built-charm
+          path: built/
+      
+      - name: Get Charm Under Test Path
+        id: charm-path
+        run: echo "charm_path=$(find built/ -name '*.charm' -type f -print)" >> $GITHUB_OUTPUT
+
       - name: Setup operator environment
         uses: charmed-kubernetes/actions-operator@main
         with:
@@ -34,23 +41,23 @@ jobs:
           provider: microk8s
           channel: 1.27-strict/stable
           lxd-channel: 5.20/stable
+  
       - name: Enable MetalLB
         if: ${{ inputs.enable-metallb == true }}
         run: /usr/bin/sg snap_microk8s -c "sudo microk8s enable metallb:${{ inputs.metallb-range }}"
+
       - name: Run integration tests
-        run: tox -e integration
-      - name: Archive Tested Charm
-        uses: actions/upload-artifact@v4
-        with:
-          name: tested-charm
-          path: .tox/**/${{ inputs.charm-file-name }}
-          retention-days: 5
+        run: |
+          tox -e integration -- \
+            --charm_path="${{ steps.charm-path.outputs.charm_path }}" \
+
       - name: Archive charmcraft logs
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: charmcraft-logs
           path: /home/runner/.local/state/charmcraft/log/*.log
+  
       - name: Archive juju crashdump
         if: failure()
         uses: actions/upload-artifact@v4
