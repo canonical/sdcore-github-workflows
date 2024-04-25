@@ -44,4 +44,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           destination-channel: ${{ inputs.track-name }}/${{ env.promote-to }}
           origin-channel: ${{ inputs.track-name }}/${{ env.promote-from }}
-          charmcraft-channel: ${{ inputs.track-name }}/stable
+          charmcraft-channel: latest/stable
