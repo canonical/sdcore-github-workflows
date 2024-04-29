@@ -6,6 +6,11 @@ name: Check Terraform Module
 on:
   workflow_call:
     inputs:
+      branch-name:
+        description: Name of the branch to checkout
+        required: false
+        type: string
+        default: main
       working-directory:
         description: The directory that stores the Terraform modules
         required: false
@@ -23,6 +28,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch-name }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3

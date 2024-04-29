@@ -6,6 +6,11 @@ name: Integration test
 on:
   workflow_call:
     inputs:
+      branch-name:
+        description: Name of the branch to checkout
+        required: false
+        type: string
+        default: main
       enable-metallb:
         description: Enable MetalLB
         required: false
@@ -23,6 +28,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch-name }}
     
       - name: Fetch Charm Under Test
         uses: actions/download-artifact@v4
