@@ -5,6 +5,12 @@ name: Integration test
 
 on:
   workflow_call:
+    inputs:
+      branch-name:
+        description: Name of the branch to checkout
+        required: false
+        type: string
+        default: main
 
 jobs:
   integration-test:
@@ -12,6 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch-name }}
 
       - name: Fetch Charm Under Test
         uses: actions/download-artifact@v4

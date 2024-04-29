@@ -5,13 +5,24 @@ name: Static analysis
 
 on:
   workflow_call:
+    inputs:
+      branch-name:
+        description: Name of the branch to checkout
+        required: false
+        type: string
+        default: main
 
 jobs:
   static-analysis:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch-name }}
+
       - name: Install tox
         run: pip install tox
+
       - name: Run tests using tox
         run: tox -e static
