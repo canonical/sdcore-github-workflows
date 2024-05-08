@@ -1,7 +1,7 @@
 name: Auto-update Charm Libraries
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       branch-name:
         description: Name of the branch to checkout
