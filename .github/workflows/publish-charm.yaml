@@ -11,7 +11,7 @@ on:
         description: Name of the charmhub track to publish
         type: string
       branch-name:
-        default: ${{ github.ref }}
+        default:
         description: An additional branch name to add to the track
         type: string
     secrets:
