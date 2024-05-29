@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: "v${{ inputs.track-name }}"
       - name: Set target channel
         env:
           PROMOTE_FROM: ${{ github.event.inputs.promotion }}
@@ -40,7 +42,7 @@ jobs:
             echo "promote-to=stable" >> ${GITHUB_ENV}
           fi
       - name: Promote Charm
-        uses: canonical/charming-actions/release-charm@2.4.0
+        uses: canonical/charming-actions/release-charm@2.6.0
         with:
           base-channel: 22.04
           credentials: ${{ secrets.CHARMCRAFT_AUTH }}
