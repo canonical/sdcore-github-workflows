@@ -48,7 +48,7 @@ jobs:
         id: sanitize
         run: |
           echo sanitized=$(echo ${{ inputs.branch-name }} | sed 's/[/_.]/-/g' | sed "s/^/\//") >> $GITHUB_OUTPUT
-        if: ${{ (inputs.branch-name != "") && (inputs.branch-name != "v1.4") }}
+        if: ${{ (inputs.branch-name != '') && (inputs.branch-name != 'v1.4') }}
 
       - name: Upload charm to Charmhub
         uses: canonical/charming-actions/upload-charm@bc8d4ee58ddf99c6f13fc80e8a14dfe1e68a8ea6
