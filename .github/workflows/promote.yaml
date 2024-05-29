@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: "v${{ inputs.track-name }}"
       - name: Set target channel
         env:
           PROMOTE_FROM: ${{ github.event.inputs.promotion }}
