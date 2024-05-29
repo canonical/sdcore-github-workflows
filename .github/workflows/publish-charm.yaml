@@ -30,19 +30,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch-name }}
+
       - name: Install charmcraft
         run: sudo snap install charmcraft --classic
+
       - name: Fetch Tested Charm
         uses: actions/download-artifact@v4
         with:
           name: tested-charm
+
       - name: Move charm in current directory
         run: find ./ -name ${{ inputs.charm-file-name }} -exec mv -t ./ {} \;
+
       - name: Sanitize the branch variable
         id: sanitize
         run: |
           echo sanitized=$(echo ${{ inputs.branch-name }} | sed 's/[/_.]/-/g' | sed "s/^/\//") >> $GITHUB_OUTPUT
-        if: ${{inputs.branch-name}} != ""
+        if: ${{ (inputs.branch-name != "") && (inputs.branch-name != "v1.4") }}
+
       - name: Upload charm to Charmhub
         uses: canonical/charming-actions/upload-charm@bc8d4ee58ddf99c6f13fc80e8a14dfe1e68a8ea6
         with:
@@ -50,6 +57,7 @@ jobs:
           credentials: "${{ secrets.CHARMCRAFT_AUTH }}"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           channel: ${{ inputs.track-name }}/edge${{ steps.sanitize.outputs.sanitized }}
+
       - name: Archive charmcraft logs
         if: failure()
         uses: actions/upload-artifact@v4
