@@ -50,6 +50,7 @@ jobs:
           committer: "Telcobot <telco-engineers@lists.canonical.com>"
           author: "Telcobot <telco-engineers@lists.canonical.com>"
           title: "chore: Update charm libraries"
+          labels: "v1.4"
           body: |
             Automated action to fetch latest version of charm libraries. The branch of this PR 
             will be wiped during the next check. Unless you really know what you're doing, you 
