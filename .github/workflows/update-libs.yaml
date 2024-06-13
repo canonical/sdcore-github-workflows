@@ -45,6 +45,7 @@ jobs:
 
       - name: Create a PR for local changes
         uses: peter-evans/create-pull-request@v6.0.5
+        id: create-pr
         with:
           token: ${{ secrets.TELCO_GITHUB_BOT_TOKEN }}
           commit-message: "chore: update charm libraries"
@@ -61,9 +62,11 @@ jobs:
       - name: Auto approve the PR
         uses: hmarr/auto-approve-action@v4
         with:
+          pull-request-number: ${{ steps.create-pr.outputs.pull-request-number }}
           review-message: "Auto approved automated PR"
 
       - name: Automerge
         uses: pascalgn/automerge-action@v0.16.3
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_METHOD: "squash"
