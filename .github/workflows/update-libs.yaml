@@ -57,16 +57,19 @@ jobs:
             will be wiped during the next check. Unless you really know what you're doing, you 
             most likely don't want to push any commits to this branch.
           branch: "chore/auto-libs"
+          labels: automerge
           delete-branch: true
 
       - name: Auto approve the PR
         uses: hmarr/auto-approve-action@v4
+        if: ${{ steps.create-pr.outputs.pull-request-number != '' }}
         with:
           pull-request-number: ${{ steps.create-pr.outputs.pull-request-number }}
           review-message: "Auto approved automated PR"
 
       - name: Automerge
         uses: pascalgn/automerge-action@v0.16.3
+        if: ${{ steps.create-pr.outputs.pull-request-number != '' }}
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           MERGE_METHOD: "squash"
