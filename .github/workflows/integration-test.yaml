@@ -51,7 +51,7 @@ jobs:
         run: tox -e integration
 
       - name: Archive Tested Charm
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.3.6
         with:
           name: tested-charm
           path: .tox/**/${{ inputs.charm-file-name }}
