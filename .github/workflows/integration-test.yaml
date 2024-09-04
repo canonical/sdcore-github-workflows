@@ -56,6 +56,7 @@ jobs:
           name: tested-charm
           path: .tox/**/${{ inputs.charm-file-name }}
           retention-days: 5
+          include-hidden-files: true
 
       - name: Archive charmcraft logs
         if: failure()
