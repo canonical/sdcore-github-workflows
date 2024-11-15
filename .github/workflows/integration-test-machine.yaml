@@ -26,7 +26,7 @@ jobs:
       - name: Setup operator environment
         run: |
           sudo snap install concierge --classic
-          sudo concierge prepare -p machine --juju-channel "3.4/stable" --lxd-channel "5.20/stable" --extra-snaps astral-uv/latest/stable
+          sudo concierge prepare -p machine --juju-channel "3.5/stable" --lxd-channel "5.20/stable" --extra-snaps astral-uv/latest/stable
           uv tool install tox --with tox-uv
 
       - name: Run integration tests
