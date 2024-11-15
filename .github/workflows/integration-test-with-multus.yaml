@@ -32,14 +32,12 @@ jobs:
         run: echo "charm_path=$(find built/ -name '*.charm' -type f -print)" >> $GITHUB_OUTPUT
 
       - name: Setup operator environment
-        uses: charmed-kubernetes/actions-operator@main
-        with:
-          juju-channel: 3.4/stable
-          provider: microk8s
-          channel: 1.27-strict/stable
-          lxd-channel: 5.20/stable
-          microk8s-addons: "hostpath-storage dns metallb:10.0.0.2-10.0.0.10"
-  
+        run: |
+          sudo snap install concierge --classic
+          sudo concierge prepare -p microk8s --microk8s-channel "1.27-strict/stable" --juju-channel "3.4/stable" --lxd-channel "5.20/stable" --extra-snaps astral-uv/latest/stable
+          sudo microk8s enable hostpath-storage dns metallb:10.0.0.2-10.0.0.10
+          uv tool install tox --with tox-uv
+
       - name: Enable Multus addon
         continue-on-error: true
         run: |
