@@ -26,6 +26,10 @@ jobs:
       - name: Setup operator environment
         run: |
           sudo snap install concierge --classic
+
+          # Workaround for lxd sometimes failing to refresh
+          sudo snap info lxd | grep "tracking": | awk '{print $2}' | grep "5.21/stable" || sudo snap stop lxd
+
           sudo concierge prepare -p machine --juju-channel "3.5/stable" --lxd-channel "5.21/stable" --extra-snaps astral-uv/latest/stable
           uv tool install tox --with tox-uv
 
