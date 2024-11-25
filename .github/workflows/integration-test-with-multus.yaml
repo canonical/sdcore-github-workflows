@@ -38,6 +38,7 @@ jobs:
           provider: microk8s
           channel: 1.31-strict/stable
           lxd-channel: 5.21/stable
+          microk8s-addons: "hostpath-storage dns metallb:10.0.0.2-10.0.0.10"
 
       - name: Install UV and Tox
         run: |
