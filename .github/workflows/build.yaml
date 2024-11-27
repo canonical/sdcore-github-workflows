@@ -2,17 +2,26 @@ name: Build
 
 on:
   workflow_call:
+    inputs:
+      branch-name:
+        description: Name of the branch to checkout
+        required: false
+        type: string
+        default: ${{ github.ref }}
 
 jobs:
   build-charm-under-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch-name }}
     
       - name: Setup LXD
         uses: canonical/setup-lxd@main
         with:
-            channel: 5.21/stable
+          channel: 5.21/stable
     
       - name: Install charmcraft
         run: sudo snap install charmcraft --classic
