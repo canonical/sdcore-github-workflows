@@ -5,6 +5,12 @@ name: Scan
 
 on:
   workflow_call:
+    inputs:
+      branch-name:
+        description: Name of the branch to checkout
+        required: false
+        type: string
+        default: ${{ github.ref }}
 
 jobs:
 
@@ -13,6 +19,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch-name }}
 
       - name: Install skopeo from rockcraft
         run: |

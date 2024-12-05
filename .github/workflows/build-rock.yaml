@@ -5,6 +5,12 @@ name: Build ROCK
 
 on:
   workflow_call:
+    inputs:
+      branch-name:
+        description: Name of the branch to checkout
+        required: false
+        type: string
+        default: ${{ github.ref }}
 
 jobs:
   build-rock:
@@ -12,8 +18,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch-name }}
+
       - uses: canonical/craft-actions/rockcraft-pack@main
         id: rockcraft
+
       - uses: actions/upload-artifact@v4
         with:
           name: rock
