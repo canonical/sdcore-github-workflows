@@ -44,7 +44,7 @@ jobs:
           CHARMCRAFT_AUTH: "${{ secrets.CHARMCRAFT_AUTH }}"
 
       - name: Create a PR for local changes
-        uses: peter-evans/create-pull-request@v7.0.6
+        uses: peter-evans/create-pull-request@v7.0.7
         id: create-pr
         with:
           token: ${{ secrets.TELCO_GITHUB_BOT_TOKEN }}
