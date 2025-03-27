@@ -53,8 +53,74 @@ jobs:
           image-ref: "ghcr.io/canonical/${{env.image_name}}:${{env.version}}"
           format: 'sarif'
           output: 'trivy-results.sarif'
+          arguments: '--ignore-unfixed=false'
 
-      - name: Upload Trivy scan results to GitHub Security tab
+      - name: Download CISA KEV Catalog
+        run: |
+          wget https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json -O known_exploited_vulnerabilities.json
+
+      - name: Compare found CVEs with KEVs
+        run: |
+          set -x 
+          # Get the CVEs from Trivy results
+          current_cves=$(jq -r '.. | .results? | arrays | .[].ruleId' trivy-results.sarif)
+          echo "Found $(wc -l <<< $current_cves) CVEs currently open"
+          
+          # Get the list of KEV CVEs from the KEV catalog
+          kevs=$(jq -r '.vulnerabilities[] | .cveID' known_exploited_vulnerabilities.json)
+          echo "Found $(wc -l <<< $kevs) KEV CVEs"
+          
+          # Compare the lists of CVEs and output any common CVEs
+          echo "----Matched CVEs----"
+          comm -12 <(sort <<< "$current_cves") <(sort <<< "$kevs") > matched_cvs.txt
+          echo "--------------------"
+          
+          # Create a SARIF template for the KEV matches
+          matched_sarif=$(cat <<EOF
+          {
+            "version": "2.1.0",
+            "runs": [
+              {
+                "tool": {
+                  "driver": {
+                    "name": "KEV Matcher",
+                    "informationUri": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+                    "rules": []
+                  }
+                },
+                "results": []
+              }
+            ]
+          }
+          EOF
+          )
+          # Add matched KEVs to the SARIF file
+          while read -r cve; do
+          matched_sarif=$(jq \
+          --arg cve "$cve" \
+          '.runs[0].tool.driver.rules += [{"id": $cve, "name": $cve, "shortDescription": {"text": "CVE matched with KEV"}, "tags": ["KEV"]}] |
+           .runs[0].results += [{"ruleId": $cve, "message": {"text": "This CVE matches the CISA KEV catalog.", "tags": ["KEV"]}}]' \
+          <<< "$matched_sarif")
+          done < matched_cvs.txt
+          
+          # Save final SARIF file
+          echo "$matched_sarif" > kev_matches.sarif    
+          set +x
+
+      - name: Upload Trivy results as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-results
+          path: |
+            trivy-results.sarif
+            kev_matches.sarif
+
+      - name: Upload CVE results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
+
+      - name: Upload KEV results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'kev_matches.sarif'
