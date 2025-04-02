@@ -20,7 +20,7 @@ jobs:
   analyze:
     runs-on: [self-hosted, linux, amd64, tiobe, jammy]
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@v4
 
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install -y python3.10-venv pipx
@@ -40,7 +40,7 @@ jobs:
           mv ${{ inputs.dir }}/coverage.xml ${{ inputs.dir }}/cover/coverage.xml
 
       - name: Run TICS analysis with github-action
-        uses: tiobe/tics-github-action@88cb795a736d2ca885753bec6ed2c8b03e3f892f # v3
+        uses: tiobe/tics-github-action@v3
         with:
           mode: qserver
           project: ${{ inputs.project}}
