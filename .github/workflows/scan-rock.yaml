@@ -61,19 +61,25 @@ jobs:
 
       - name: Compare found CVEs with KEVs
         run: |
-          set -x 
+          set -euo pipefail
+          
+          # Define the error_exit function
+          error_exit() {
+            echo "::error file=${BASH_SOURCE[1]},line=$1::Error: $2"
+            exit 1
+          }
+          
+          # Trap errors and call error_exit on termination
+          trap 'error_exit ${LINENO} "An error occurred while comparing CVEs with KEVs."' ERR
+          
           # Get the CVEs from Trivy results
           current_cves=$(jq -r '.. | .results? | arrays | .[].ruleId' trivy-results.sarif)
-          echo "Found $(wc -l <<< $current_cves) CVEs currently open"
           
           # Get the list of KEV CVEs from the KEV catalog
           kevs=$(jq -r '.vulnerabilities[] | .cveID' known_exploited_vulnerabilities.json)
-          echo "Found $(wc -l <<< $kevs) KEV CVEs"
           
           # Compare the lists of CVEs and output any common CVEs
-          echo "----Matched CVEs----"
           comm -12 <(sort <<< "$current_cves") <(sort <<< "$kevs") > matched_cvs.txt
-          echo "--------------------"
           
           # Create a SARIF template for the KEV matches
           matched_sarif=$(cat <<EOF
@@ -105,15 +111,6 @@ jobs:
           
           # Save final SARIF file
           echo "$matched_sarif" > kev_matches.sarif    
-          set +x
-
-      - name: Upload Trivy results as an artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: trivy-results
-          path: |
-            trivy-results.sarif
-            kev_matches.sarif
 
       - name: Upload CVE results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
