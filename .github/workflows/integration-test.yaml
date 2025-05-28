@@ -24,7 +24,7 @@ on:
 
 jobs:
   integration-test:
-    runs-on: ubuntu-22.04
+    runs-on: [self-hosted, linux, X64, xlarge, jammy]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,13 +41,25 @@ jobs:
         id: charm-path
         run: echo "charm_path=$(find built/ -name '*.charm' -type f -print)" >> $GITHUB_OUTPUT
 
+      - name: Setup Canonical K8S
+        id: canonical-k8s
+        run: |
+          sudo snap install k8s --classic --channel=1.32-classic/stable
+          cat << EOF | sudo k8s bootstrap --file -
+          containerd-base-dir: /opt/containerd
+          EOF
+          sudo k8s enable network local-storage
+          sudo k8s status --wait-ready --timeout 5m
+          mkdir -p ~/.kube
+          sudo k8s config > ~/.kube/config
+          echo "kubeconfig=$(sudo k8s config | base64 -w 0)" >> $GITHUB_OUTPUT
+
       - name: Setup operator environment
         uses: charmed-kubernetes/actions-operator@main
         with:
+          credentials-yaml: ${{ steps.canonical-k8s.outputs.kubeconfig }}
           juju-channel: 3.6/stable
-          provider: microk8s
-          channel: 1.31-strict/stable
-          lxd-channel: 5.21/stable
+          provider: k8s
 
       - name: Install UV and Tox
         run: |
@@ -57,7 +69,9 @@ jobs:
   
       - name: Enable MetalLB
         if: ${{ inputs.enable-metallb == true }}
-        run: /usr/bin/sg snap_microk8s -c "sudo microk8s enable metallb:${{ inputs.metallb-range }}"
+        run: |
+          sudo k8s enable load-balancer
+          sudo k8s set load-balancer.cidrs="${{ inputs.metallb-range }}" load-balancer.enabled=true load-balancer.l2-mode=true
 
       - name: Run integration tests
         run: |
