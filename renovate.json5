@@ -20,7 +20,14 @@
   "packageRules": [
     // Later rules override earlier rules
     {
-      "matchManagers": ["pep621"],
+      "matchBaseBranches": [
+        "main",
+        "v*",
+      ],
+      "matchManagers": [
+        "pep621",
+      ],
+
       "rangeStrategy": "bump",
       "groupName": "Python dependencies"
     },
@@ -36,12 +43,24 @@
       "enabled": false
     },
     {
-      "matchManagers": ["github-actions"],
-      "groupName": "GitHub actions"
+      "matchBaseBranches": [
+        "main",
+        "v*",
+      ],
+      "matchManagers": [
+        "github-actions",
+      ],
+      "groupName": "GitHub actions",
     },
     {
-      "matchManagers": ["terraform"],
-      "groupName": "Terraform"
+      "matchBaseBranches": [
+        "main",
+        "v*",
+      ],
+      "matchManagers": [
+        "terraform",
+      ],
+      "groupName": "Terraform",
     },
   ],
 }
