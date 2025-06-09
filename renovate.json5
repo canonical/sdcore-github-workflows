@@ -9,11 +9,15 @@
   "automerge": true,
   "automergeStrategy": "squash",
   "automergeType": "pr",
+  "baseBranches": [
+    "main",
+    "v*",
+  ],
   "platformAutomerge": true,
-  "schedule": ["after 1am and before 3am every monday"],
+  "schedule": ["after 1am and before 3am on monday"],
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["after 1am and before 3am every wednesday"]
+    "schedule": ["after 1am and before 3am on wednesday"],
   },
   "timezone": "Etc/UTC",
   "enabledManagers": ["pep621", "github-actions", "terraform"],
