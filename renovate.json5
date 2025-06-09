@@ -9,6 +9,10 @@
   "automerge": true,
   "automergeStrategy": "squash",
   "automergeType": "pr",
+  "baseBranches": [
+    "main",
+    "v*",
+  ],
   "platformAutomerge": true,
   "schedule": ["after 1am and before 3am on monday"],
   "lockFileMaintenance": {
