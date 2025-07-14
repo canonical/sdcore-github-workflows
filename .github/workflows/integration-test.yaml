@@ -61,10 +61,11 @@ jobs:
           juju-channel: 3.6/stable
           provider: k8s
 
-      - name: Install UV and Tox
+      - name: Install UV, Tox and Jhack
         run: |
           pipx uninstall tox
           sudo snap install astral-uv --classic
+          sudo snap install jhack
           uv tool install tox --with tox-uv --force
   
       - name: Enable MetalLB
