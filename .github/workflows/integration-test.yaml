@@ -66,6 +66,7 @@ jobs:
           pipx uninstall tox
           sudo snap install astral-uv --classic
           sudo snap install jhack
+          sudo snap connect jhack:dot-local-share-juju snapd
           uv tool install tox --with tox-uv --force
   
       - name: Enable MetalLB
