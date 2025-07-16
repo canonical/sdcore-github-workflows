@@ -46,7 +46,7 @@ jobs:
         if: ${{inputs.branch-name}} != ""
 
       - name: Upload charm to Charmhub
-        uses: canonical/charming-actions/upload-charm@1753e0803f70445132e92acd45c905aba6473225
+        uses: canonical/charming-actions/upload-charm@38f996620f6c919bec65bd3a6750eb8b1cceba22
         with:
           built-charm-path: ${{ steps.charm-path.outputs.charm_path }}
           credentials: "${{ secrets.CHARMCRAFT_AUTH }}"
