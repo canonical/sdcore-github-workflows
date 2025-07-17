@@ -44,7 +44,7 @@ jobs:
       - name: Setup Canonical K8S
         id: canonical-k8s
         run: |
-          sudo snap install k8s --classic --channel=1.32-classic/stable
+          sudo snap install k8s --classic --channel=1.33-classic/stable
           cat << EOF | sudo k8s bootstrap --file -
           containerd-base-dir: /opt/containerd
           EOF
@@ -61,10 +61,12 @@ jobs:
           juju-channel: 3.6/stable
           provider: k8s
 
-      - name: Install UV and Tox
+      - name: Install UV, Tox and Jhack
         run: |
           pipx uninstall tox
           sudo snap install astral-uv --classic
+          sudo snap install jhack
+          sudo snap connect jhack:dot-local-share-juju snapd
           uv tool install tox --with tox-uv --force
   
       - name: Enable MetalLB
