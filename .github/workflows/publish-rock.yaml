@@ -24,7 +24,7 @@ jobs:
       - name: Install skopeo from rockcraft
         run: |
           sudo snap install --edge --classic rockcraft
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: rock
 
