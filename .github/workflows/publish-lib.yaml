@@ -20,7 +20,7 @@ jobs:
     name: Charmhub upload SD-Core lib
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install charmcraft
         run: sudo snap install charmcraft --classic
       - name: Publish lib
